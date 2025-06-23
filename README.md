@@ -1,1 +1,136 @@
-# k61hoacophuong
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Mùa hè năm nay phải thật vui nhé!</title>
+  <style>
+    body {
+      background-color: #fff9f3;
+      font-family: "Segoe UI", sans-serif;
+      color: #333;
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #f07c7c;
+      margin-bottom: 20px;
+    }
+    .entry-form {
+      margin-bottom: 30px;
+    }
+    input, textarea, button {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #f7a9a8;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #f07c7c;
+    }
+    #messages {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+    }
+    .entry {
+      background: #fffce6;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      font-size: 15px;
+      position: relative;
+      word-wrap: break-word;
+      min-height: 120px;
+      transition: transform 0.3s ease;
+      transform: rotate(calc(var(--rotation, 0deg)));
+    }
+    .entry:hover {
+      transform: scale(1.02);
+    }
+    .entry strong {
+      display: block;
+      margin-bottom: 8px;
+      color: #cc5c5c;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mùa hè năm nay phải thật vui nhé!</h1>
+
+  <div class="entry-form">
+    <input type="text" id="nameInput" placeholder="Tên của bạn">
+    <textarea id="messageInput" rows="4" placeholder="Lời chúc, lời nhắn gửi đến cô..."></textarea>
+    <button onclick="submitMessage()">Gửi lời chúc</button>
+  </div>
+
+  <div id="messages"></div>
+
+  <script>
+    const nameInput = document.getElementById("nameInput");
+    const messageInput = document.getElementById("messageInput");
+    const messagesDiv = document.getElementById("messages");
+
+    function submitMessage() {
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+
+      if (name && message) {
+        const entry = createEntry(name, message);
+        messagesDiv.prepend(entry);
+        saveToStorage(name, message);
+
+        nameInput.value = "";
+        messageInput.value = "";
+      } else {
+        alert("Bạn cần nhập tên và lời chúc trước khi gửi nhen!");
+      }
+    }
+
+    function saveToStorage(name, message) {
+      const existing = JSON.parse(localStorage.getItem("farewell_messages") || "[]");
+      existing.unshift({ name, message });
+      localStorage.setItem("farewell_messages", JSON.stringify(existing));
+    }
+
+    function loadMessages() {
+      const saved = JSON.parse(localStorage.getItem("farewell_messages") || "[]");
+      for (const { name, message } of saved) {
+        const entry = createEntry(name, message);
+        messagesDiv.appendChild(entry);
+      }
+    }
+
+    function createEntry(name, message) {
+      const entry = document.createElement("div");
+      entry.className = "entry";
+      entry.innerHTML = `<strong>${name}</strong><p>${message}</p>`;
+      const angle = (Math.random() * 6 - 3).toFixed(2);
+      const color = getRandomColor();
+      entry.style.setProperty("--rotation", `${angle}deg`);
+      entry.style.backgroundColor = color;
+      return entry;
+    }
+
+    function getRandomColor() {
+      const colors = ["#fffce6", "#ffe0e0", "#e0f7fa", "#f9e0ff", "#e7f9e0"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    loadMessages();
+  </script>
+</body>
+</html>
